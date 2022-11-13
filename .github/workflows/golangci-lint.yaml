@@ -3,7 +3,7 @@ on: push
 permissions:
   contents: read
   # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  pull-requests: read only-new-issues
+  pull-requests: read
 jobs:
   golangci:
     name: lint
