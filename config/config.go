@@ -14,6 +14,11 @@ import (
 type Config struct {
 	Server *Server
 	Log    *log.Log
+	App    *App
+}
+
+type App struct {
+	IsProduction bool
 }
 
 type Server struct {
@@ -21,10 +26,11 @@ type Server struct {
 	Port int    `env:"PORT"`
 }
 
-func NewConfig() *Config {
+func NewConfig(app *App) *Config {
 	l := log.NewLog()
 	cfg := &Config{
 		Log: l,
+		App: app,
 	}
 	s, err := cfg.parseServerEnv()
 	if err != nil {
@@ -35,10 +41,14 @@ func NewConfig() *Config {
 	return cfg
 }
 
-func (c *Config) parseServerEnv() (*Server, error) {
+func (c *Config) parseServerEnv() (server *Server, err error) {
 	c.Log.Info("loading server env file ...")
 	dir := helpers.RootDir()
-	err := godotenv.Load(fmt.Sprintf("%s/*.env", dir))
+	if c.App.IsProduction {
+		err = godotenv.Load(fmt.Sprintf("%s/prod.env", dir))
+	} else {
+		err = godotenv.Load(fmt.Sprintf("%s/local.env", dir))
+	}
 	if err != nil {
 		return nil, errors.New("could not parse server env : " + err.Error())
 	}

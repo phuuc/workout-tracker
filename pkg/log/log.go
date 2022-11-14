@@ -46,11 +46,12 @@ func NewLog() *Log {
 	}
 }
 
-func (l *Log) Info(message string, a ...any) (int, error) {
-	return l.print(levelInfo, message, a...)
+func (l *Log) Info(message string, a ...any) {
+	l.print(levelInfo, message, a...)
 }
-func (l *Log) Error(message string, a ...any) (int, error) {
-	return l.print(levelError, message, a...)
+
+func (l *Log) Error(message string, a ...any) {
+	l.print(levelError, message, a...)
 }
 
 func (l *Log) print(level level, message string, a ...any) (int, error) {
@@ -77,7 +78,6 @@ func (l *Log) print(level level, message string, a ...any) (int, error) {
 }
 
 func (l *Log) printInfo(line []byte) (int, error) {
-
 	return l.out.Write(append([]byte(line), '\n'))
 }
 

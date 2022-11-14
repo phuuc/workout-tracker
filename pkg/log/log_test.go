@@ -26,9 +26,7 @@ func (s *logSuite) TestInfo() {
 		message = "test"
 	)
 	s.Run("success", func() {
-		_, err := s.Log.Info(message)
-
-		s.NoError(err)
+		s.Log.Info(message)
 	})
 }
 
@@ -37,8 +35,6 @@ func (s *logSuite) TestError() {
 		message = "test%v"
 	)
 	s.Run("success", func() {
-		_, err := s.Log.Error(message, 01)
-
-		s.NoError(err)
+		s.Log.Error(message, 01)
 	})
 }

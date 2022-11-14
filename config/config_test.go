@@ -25,16 +25,22 @@ func (s *configSuite) TestNewConfig() {
 			Host: "localhost",
 			Port: 3000,
 		}
+		app = &config.App{
+			IsProduction: false,
+		}
 	)
 	f, err := os.CreateTemp(helpers.RootDir(), ".env")
 	if err != nil {
 		return
 	}
-	f.WriteString(`API_HOST="localhost"\nAPI_PORT=3000`)
+	_, err = f.WriteString(`API_HOST="localhost"\nAPI_PORT=3000`)
+	if err != nil {
+		return
+	}
 	defer f.Close()
 
 	s.Run("success", func() {
-		cfg := config.NewConfig()
+		cfg := config.NewConfig(app)
 
 		s.Equal(server, cfg.Server)
 	})

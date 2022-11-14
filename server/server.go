@@ -29,5 +29,8 @@ func (r *Router) Run() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		panic("server could not run...")
+	}
 }
