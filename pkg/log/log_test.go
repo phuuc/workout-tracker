@@ -13,8 +13,8 @@ type logSuite struct {
 	*log.Log
 }
 
-func (l *logSuite) SetupSuite() {
-	l.Log = log.NewLog()
+func (s *logSuite) SetupSuite() {
+	s.Log = log.NewLog()
 }
 
 func TestLogSuiteInit(t *testing.T) {
@@ -34,10 +34,10 @@ func (s *logSuite) TestInfo() {
 
 func (s *logSuite) TestError() {
 	var (
-		message = "test"
+		message = "test%v"
 	)
 	s.Run("success", func() {
-		_, err := s.Log.Error(message)
+		_, err := s.Log.Error(message, 01)
 
 		s.NoError(err)
 	})
