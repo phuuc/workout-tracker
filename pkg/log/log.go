@@ -3,24 +3,25 @@ package log
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"sync"
 	"time"
 
-	"github.com/finnpn/workout-tracker/pkg/trace"
+	"github.com/finnpn/workout-tracker/pkg/helpers"
 )
 
 type level int8
 
 const (
-	LevelInfo level = iota
-	LevelError
+	levelInfo level = iota
+	levelError
 )
 
 func (l level) String() string {
 	switch l {
-	case LevelError:
+	case levelError:
 		return "ERROR"
 	default:
 		return "INFO"
@@ -33,10 +34,10 @@ type Log struct {
 }
 
 type LogBody struct {
-	Level   string       `json:"level"`
-	Message string       `json:"message"`
-	Trace   *trace.Trace `json:"trace,omitempty"`
-	Time    string       `json:"time"`
+	Level   string         `json:"level"`
+	Message interface{}    `json:"message"`
+	Trace   *helpers.Trace `json:"trace,omitempty"`
+	Time    string         `json:"time"`
 }
 
 func NewLog() *Log {
@@ -45,29 +46,32 @@ func NewLog() *Log {
 	}
 }
 
-func (l *Log) Info(message string) (int, error) {
-	return l.print(LevelInfo, message)
-}
-func (l *Log) Error(message string) (int, error) {
-	return l.print(LevelError, message)
+func (l *Log) Info(message string, a ...any) {
+	l.print(levelInfo, message, a...)
 }
 
-func (l *Log) print(level level, message string) (int, error) {
+func (l *Log) Error(message string, a ...any) {
+	l.print(levelError, message, a...)
+}
+
+func (l *Log) print(level level, message string, a ...any) (int, error) {
+	message = fmt.Sprintf(message, a...)
 	logBody := &LogBody{
 		Level:   level.String(),
 		Message: message,
 		Time:    time.Now().UTC().Format(time.RFC3339),
 	}
-	if level >= LevelError {
-		logBody.Trace = trace.NewTrace()
+	if level >= levelError {
+		logBody.Trace = helpers.NewTrace()
 	}
+
 	line, err := json.Marshal(logBody)
 	if err != nil {
 		return 0, errors.New("unable to marshal log message")
 	}
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	if level >= LevelError {
+	if level >= levelError {
 		return l.printError(line)
 	}
 	return l.printInfo(line)

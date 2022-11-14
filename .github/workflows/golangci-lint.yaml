@@ -1,4 +1,4 @@
-name: workflows
+name: ci-lint
 on: push
 permissions:
   contents: read
