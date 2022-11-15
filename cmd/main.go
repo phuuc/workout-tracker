@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/finnpn/workout-tracker/config"
+	"github.com/finnpn/workout-tracker/infras"
 	"github.com/finnpn/workout-tracker/server"
 )
 
@@ -16,4 +17,7 @@ func main() {
 	})
 	server := server.NewRouter(cfg)
 	server.Run()
+
+	db := infras.NewDB(cfg)
+	db.RunMysql()
 }

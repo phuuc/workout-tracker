@@ -13,8 +13,8 @@ import (
 
 type Config struct {
 	Server *Server
-	Log    *log.Log
 	App    *App
+	Mysql  *Mysql
 }
 
 type App struct {
@@ -22,27 +22,33 @@ type App struct {
 }
 
 type Server struct {
-	Host string `env:"HOST"`
-	Port int    `env:"PORT"`
+	Host string `env:"host"`
+	Port int    `env:"port"`
+}
+
+type Mysql struct {
+	User   string `env:"user"`
+	Passwd string `env:"passwd"`
+	Net    string `env:"net"`
+	Host   string `env:"host"`
+	Port   int    `env:"port"`
+	DbName string `env:"db_name"`
 }
 
 func NewConfig(app *App) *Config {
-	l := log.NewLog()
 	cfg := &Config{
-		Log: l,
 		App: app,
 	}
-	s, err := cfg.parseServerEnv()
+	err := cfg.parseEnv()
 	if err != nil {
-		l.Error("shut down the program with err =%v", err)
+		log.Error("shut down the program with err =%v", err)
 		os.Exit(1)
 	}
-	cfg.Server = s
 	return cfg
 }
 
-func (c *Config) parseServerEnv() (server *Server, err error) {
-	c.Log.Info("loading server env file ...")
+func (c *Config) parseEnv() (err error) {
+	log.Info("loading env file ...")
 	dir := helpers.RootDir()
 	if c.App.IsProduction {
 		err = godotenv.Load(fmt.Sprintf("%s/prod.env", dir))
@@ -50,19 +56,29 @@ func (c *Config) parseServerEnv() (server *Server, err error) {
 		err = godotenv.Load(fmt.Sprintf("%s/local.env", dir))
 	}
 	if err != nil {
-		return nil, errors.New("could not parse server env : " + err.Error())
+		return errors.New("could not parse server env : " + err.Error())
 	}
-	port, err := strconv.Atoi(os.Getenv("API_PORT"))
+	c.Server.Port, err = c.stringToInt("API_PORT")
 	if err != nil {
-		c.Log.Error("could not parse int to string with err=%v", err)
-		return nil, errors.New("could not parse port : " + err.Error())
+		return err
 	}
-	return &Server{
-		Host: os.Getenv("API_HOST"),
-		Port: port,
-	}, nil
+	c.Mysql.Port, err = c.stringToInt("MYSQL_PORT")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (c *Config) Addr() string {
-	return fmt.Sprintf("%s:%d", c.Server.Host, c.Server.Port)
+func (c *Config) stringToInt(port string) (int, error) {
+	p, err := strconv.Atoi(os.Getenv(port))
+	if err != nil {
+		log.Error("could not parse int to string with err=%v", err)
+		return 0, errors.New("could not parse port : " + err.Error())
+	}
+	return p, nil
+}
+
+func (c *Config) Addr(host string, port int) string {
+	return fmt.Sprintf("%s:%d", host, port)
 }

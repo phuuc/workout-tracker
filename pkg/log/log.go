@@ -12,6 +12,8 @@ import (
 	"github.com/finnpn/workout-tracker/pkg/helpers"
 )
 
+var Log *Logger
+
 type level int8
 
 const (
@@ -28,7 +30,7 @@ func (l level) String() string {
 	}
 }
 
-type Log struct {
+type Logger struct {
 	out io.Writer
 	mu  sync.Mutex
 }
@@ -40,21 +42,27 @@ type LogBody struct {
 	Time    string         `json:"time"`
 }
 
-func NewLog() *Log {
-	return &Log{
+func init() {
+	Log = NewLog()
+}
+
+func NewLog() *Logger {
+	return &Logger{
 		out: os.Stdout,
 	}
 }
 
-func (l *Log) Info(message string, a ...any) {
-	l.print(levelInfo, message, a...)
+// nolint
+func Info(message string, a ...any) {
+	print(levelInfo, message, a...)
 }
 
-func (l *Log) Error(message string, a ...any) {
-	l.print(levelError, message, a...)
+// nolint
+func Error(message string, a ...any) {
+	print(levelError, message, a...)
 }
 
-func (l *Log) print(level level, message string, a ...any) (int, error) {
+func print(level level, message string, a ...any) (int, error) {
 	message = fmt.Sprintf(message, a...)
 	logBody := &LogBody{
 		Level:   level.String(),
@@ -69,19 +77,19 @@ func (l *Log) print(level level, message string, a ...any) (int, error) {
 	if err != nil {
 		return 0, errors.New("unable to marshal log message")
 	}
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	Log.mu.Lock()
+	defer Log.mu.Unlock()
 	if level >= levelError {
-		return l.printError(line)
+		return printError(line)
 	}
-	return l.printInfo(line)
+	return printInfo(line)
 }
 
-func (l *Log) printInfo(line []byte) (int, error) {
-	return l.out.Write(append([]byte(line), '\n'))
+func printInfo(line []byte) (int, error) {
+	return Log.out.Write(append([]byte(line), '\n'))
 }
 
-func (l *Log) printError(line []byte) (int, error) {
+func printError(line []byte) (int, error) {
 	var (
 		reset = []byte("\033[0m")
 		red   = []byte("\033[31m")
@@ -91,5 +99,5 @@ func (l *Log) printError(line []byte) (int, error) {
 	body = append(body, line...)
 	body = append(body, reset...)
 
-	return l.out.Write(append(body, '\n'))
+	return Log.out.Write(append(body, '\n'))
 }

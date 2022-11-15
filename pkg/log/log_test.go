@@ -9,12 +9,6 @@ import (
 
 type logSuite struct {
 	suite.Suite
-
-	*log.Log
-}
-
-func (s *logSuite) SetupSuite() {
-	s.Log = log.NewLog()
 }
 
 func TestLogSuiteInit(t *testing.T) {
@@ -26,7 +20,7 @@ func (s *logSuite) TestInfo() {
 		message = "test"
 	)
 	s.Run("success", func() {
-		s.Log.Info(message)
+		log.Info(message)
 	})
 }
 
@@ -35,6 +29,6 @@ func (s *logSuite) TestError() {
 		message = "test%v"
 	)
 	s.Run("success", func() {
-		s.Log.Error(message, 01)
+		log.Error(message, 01)
 	})
 }
