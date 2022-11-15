@@ -52,10 +52,12 @@ func NewLog() *Logger {
 	}
 }
 
+// nolint
 func Info(message string, a ...any) {
 	print(levelInfo, message, a...)
 }
 
+// nolint
 func Error(message string, a ...any) {
 	print(levelError, message, a...)
 }

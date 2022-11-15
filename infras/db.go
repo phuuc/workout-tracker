@@ -18,7 +18,7 @@ func NewDB(config *config.Config) *DB {
 	}
 }
 
-func (d *DB) RunMysql() (*sql.DB, error) {
+func (d *DB) RunMysql() *sql.DB {
 	log.Info("running mysql db...")
 	cfg := mysql.Config{
 		User:   d.config.Mysql.User,
@@ -31,13 +31,13 @@ func (d *DB) RunMysql() (*sql.DB, error) {
 	db, err := sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Error("db could not open with err=%v", err)
-		return nil, err
+		return nil
 	}
 	err = db.Ping()
 	if err != nil {
 		log.Error("db could not ping with err=%v", err)
-		return nil, err
+		return nil
 	}
 	log.Info("connected")
-	return db, nil
+	return db
 }
