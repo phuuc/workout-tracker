@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("configfile", "", "config file path")
+	configFile := flag.String("config-file", "", "config file path")
 	flag.Parse()
 
 	cfg, err := config.Load(*configFile)

@@ -2,3 +2,15 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0.31
+    container_name: wt-db
+    restart: always
+    environment:
+      - MYSQL_USER=wt
+      - MYSQL_ROOT_PASSWORD=wt
+      - MYSQL_PASSWORD=wt
+      - MYSQL_DB=workout-tracker
+    ports:
+      - 5436:3306
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./:/app

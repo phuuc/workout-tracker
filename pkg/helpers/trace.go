@@ -12,7 +12,7 @@ type Trace struct {
 
 func NewTrace() *Trace {
 	pc := make([]uintptr, 15)
-	n := runtime.Callers(2, pc)
+	n := runtime.Callers(4, pc)
 	frames := runtime.CallersFrames(pc[:n])
 	frame, _ := frames.Next()
 	return &Trace{
