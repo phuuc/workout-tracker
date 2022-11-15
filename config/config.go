@@ -37,7 +37,6 @@ func Load(filePath string) (*Config, error) {
 	if len(filePath) == 0 {
 		filePath = os.Getenv("CONFIG_FILE")
 	}
-
 	log.Info("loading config file with filepath =%s", filePath)
 
 	configBytes, err := os.ReadFile(filePath)
