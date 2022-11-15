@@ -1,0 +1,17 @@
+environment: ${ENVIRONMENT}
+
+server:
+  api_host: ${API_HOST}
+  api_port: ${API_PORT}
+
+db:
+  driver_name: ${DB_DRIVER_NAME}
+  port: ${DB_PORT}
+  user_name: ${DB_USER_NAME}
+  name: ${DB_NAME}
+  password: ${DB_PASSWORD}
+  host: ${DB_HOST}
+  max_open_conns: ${DB_MAX_OPEN_CONNS}
+  max_idle_conns: ${DB_MAX_IDLE_CONNS}
+  conn_max_life_time_ms: ${DB_CONN_MAX_LIFE_TIME_MS}
+  #migration_conn_url: ${DB_MIGRATION_CONN_URL}

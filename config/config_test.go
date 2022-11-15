@@ -22,11 +22,8 @@ func TestConfigSuiteInit(t *testing.T) {
 func (s *configSuite) TestNewConfig() {
 	var (
 		server = &config.Server{
-			Host: "localhost",
+			Host: "127.0.0.1",
 			Port: 3000,
-		}
-		app = &config.App{
-			IsProduction: false,
 		}
 	)
 	f, err := os.CreateTemp(helpers.RootDir(), ".env")
@@ -40,8 +37,9 @@ func (s *configSuite) TestNewConfig() {
 	defer f.Close()
 
 	s.Run("success", func() {
-		cfg := config.NewConfig(app)
+		cfg, err := config.Load(f.Name())
 
+		s.NoError(err)
 		s.Equal(server, cfg.Server)
 	})
 }
