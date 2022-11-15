@@ -2,6 +2,7 @@ package infras
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/finnpn/workout-tracker/config"
 	"github.com/finnpn/workout-tracker/pkg/log"
@@ -21,11 +22,12 @@ func NewDB(config *config.Config) *DB {
 func (d *DB) RunMysql() *sql.DB {
 	log.Info("running mysql db...")
 	cfg := mysql.Config{
-		User:   d.config.Mysql.User,
-		Passwd: d.config.Mysql.Passwd,
-		Net:    "tcp",
-		Addr:   d.config.Addr(d.config.Mysql.Host, d.config.Mysql.Port),
-		DBName: d.config.Mysql.DbName,
+		User:      d.config.Mysql.UserName,
+		Passwd:    d.config.Mysql.Passwd,
+		Net:       "tcp",
+		Addr:      d.config.Addr(d.config.Mysql.Host, d.config.Mysql.Port),
+		DBName:    d.config.Mysql.DbName,
+		ParseTime: true,
 	}
 
 	db, err := sql.Open("mysql", cfg.FormatDSN())
@@ -38,6 +40,10 @@ func (d *DB) RunMysql() *sql.DB {
 		log.Error("db could not ping with err=%v", err)
 		return nil
 	}
+	db.SetMaxIdleConns(d.config.Mysql.MaxIdleConns)
+	db.SetMaxOpenConns(10)
+	db.SetConnMaxLifetime(time.Duration(d.config.Mysql.ConnMaxLifeTimeMiliseconds))
+
 	log.Info("connected")
 	return db
 }

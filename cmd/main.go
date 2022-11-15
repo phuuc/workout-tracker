@@ -9,12 +9,14 @@ import (
 )
 
 func main() {
-	isProd := flag.Bool("is production", false, "to specify environment variable")
+	configFile := flag.String("configfile", "", "config file path")
 	flag.Parse()
 
-	cfg := config.NewConfig(&config.App{
-		IsProduction: *isProd,
-	})
+	cfg, err := config.Load(*configFile)
+	if err != nil {
+		panic(err)
+	}
+
 	server := server.NewRouter(cfg)
 	server.Run()
 
