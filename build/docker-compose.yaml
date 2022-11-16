@@ -5,10 +5,10 @@ services:
     container_name: wt-db
     restart: always
     environment:
-      - MYSQL_USER=wt
-      - MYSQL_ROOT_PASSWORD=wt
-      - MYSQL_PASSWORD=wt
-      - MYSQL_DB=workout-tracker
+      - MYSQL_USER="${DB_USER_NAME}"
+      - MYSQL_ROOT_PASSWORD="${DB_PASSWORD}"
+      - MYSQL_PASSWORD="${DB_PASSWORD}"
+      - MYSQL_DB="${DB_NAME}"
     ports:
       - 5436:3306
     volumes:
