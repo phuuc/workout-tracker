@@ -18,8 +18,8 @@ func main() {
 	}
 
 	server := server.NewRouter(cfg)
-	server.Run()
-
 	db := infras.NewDB(cfg)
+
+	server.Run()
 	db.RunMysql()
 }
