@@ -7,9 +7,9 @@ prepare:
 lint:
 	cd ./bin ; \
 	./golangci-lint run ../...
-up :
+up:
 	cd ./build ;\
-	docker compose up
+	docker compose --env-file .local.env up
 down:
 	cd ./build ;\
 	docker compose down
