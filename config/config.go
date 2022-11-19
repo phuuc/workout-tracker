@@ -15,8 +15,8 @@ type Config struct {
 }
 
 type Server struct {
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
+	ApiHost string `yaml:"api_host"`
+	ApiPort int    `yaml:"api_port"`
 }
 
 type Mysql struct {
@@ -30,7 +30,7 @@ type Mysql struct {
 	Passwd    string `yaml:"passwd"`
 	Host      string `yaml:"host"`
 	Port      int    `yaml:"port"`
-	DbName    string `yaml:"db_name"`
+	Name      string `yaml:"name"`
 }
 
 func Load(filePath string) (*Config, error) {
@@ -54,6 +54,11 @@ func Load(filePath string) (*Config, error) {
 		log.Error("Failed to parse config file with err=%v", err)
 		return nil, err
 	}
+	log.Info("done parsing config ===========")
+	log.Info("environment %s", cfg.Environment)
+	log.Info("mysql =%v", *cfg.Mysql)
+	log.Info("server =%v", *cfg.Server)
+
 	return cfg, nil
 }
 

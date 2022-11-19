@@ -20,6 +20,7 @@ func main() {
 	server := server.NewRouter(cfg)
 	db := infras.NewDB(cfg)
 
-	server.Run()
 	db.RunMysql()
+	db.RunMigration()
+	server.Run()
 }

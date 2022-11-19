@@ -2,7 +2,7 @@ package entities
 
 import "time"
 
-type Types struct {
+type Excercises struct {
 	ID        int
 	Name      string
 	CreatedAt time.Time
