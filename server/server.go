@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/finnpn/workout-tracker/config"
+	"github.com/finnpn/workout-tracker/pkg/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +24,7 @@ func NewRouter(cfg *config.Config) *Router {
 }
 func (r *Router) Run() {
 	s := &http.Server{
-		Addr:           r.config.Addr(r.config.Server.Host, r.config.Server.Port),
+		Addr:           r.config.Addr(r.config.Server.ApiHost, r.config.Server.ApiPort),
 		Handler:        r.router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
@@ -33,5 +34,5 @@ func (r *Router) Run() {
 	if err != nil {
 		panic("server could not run...")
 	}
-
+	log.Info("running with addr : %s", s.Addr)
 }

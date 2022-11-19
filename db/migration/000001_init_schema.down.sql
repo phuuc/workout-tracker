@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS `workout`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `excercise`;

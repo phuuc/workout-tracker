@@ -22,8 +22,8 @@ func TestConfigSuiteInit(t *testing.T) {
 func (s *configSuite) TestNewConfig() {
 	var (
 		server = &config.Server{
-			Host: "127.0.0.1",
-			Port: 3000,
+			ApiHost: "127.0.0.1",
+			ApiPort: 3000,
 		}
 	)
 	f, err := os.CreateTemp(helpers.RootDir(), ".env")

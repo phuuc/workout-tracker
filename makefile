@@ -7,9 +7,11 @@ prepare:
 lint:
 	cd ./bin ; \
 	./golangci-lint run ../...
+
 up:
 	cd ./build ;\
 	docker compose --env-file .local.env up
+
 down:
 	cd ./build ;\
 	docker compose down
@@ -21,3 +23,6 @@ start:
 stop:
 	cd ./build ;\
 	docker compose stop
+
+create:
+	migrate create -ext sql -dir db/migration -seq $(name)
