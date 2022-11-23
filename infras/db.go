@@ -14,7 +14,6 @@ import (
 )
 
 type DB struct {
-	db     *sql.DB
 	config *config.Config
 }
 
@@ -24,15 +23,14 @@ func NewDB(config *config.Config) *DB {
 	}
 }
 
-func (d *DB) RunMysql() {
+func (d *DB) SetupMysql() *sql.DB {
 	log.Info("running mysql db...")
-
+	var err error
 	db, err := sql.Open(d.config.Mysql.DriverName, d.mysqlConfig())
 	if err != nil {
 		log.Error("db could not open with err=%v", err)
 		panic(err)
 	}
-
 	err = db.Ping()
 	if err != nil {
 		log.Error("db could not ping with err=%v", err)
@@ -42,8 +40,8 @@ func (d *DB) RunMysql() {
 	db.SetMaxOpenConns(10)
 	db.SetConnMaxLifetime(time.Duration(d.config.Mysql.ConnMaxLifeTimeMiliseconds))
 
-	d.db = db
 	log.Info("connected...")
+	return db
 }
 
 func (d *DB) RunMigration() {
@@ -51,11 +49,11 @@ func (d *DB) RunMigration() {
 	if err != nil {
 		log.Error("failed run migration with err=%v", err)
 	}
+
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Error("failed run migration with err=%v", err)
 	}
 	log.Info("migration completed!")
-	m.Close()
 }
 
 func (d *DB) mysqlConfig() string {
